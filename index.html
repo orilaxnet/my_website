@@ -25,20 +25,24 @@
       const [selectedImage, setSelectedImage] = useState(0);
       const [projects, setProjects] = useState([]);
       const [loading, setLoading] = useState(true);
+      const [currentSection, setCurrentSection] = useState('home'); // 'home', 'works', 'contact'
 
       const scrollToHome = (e) => {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        setCurrentSection('home');
       };
 
       const scrollToWorks = (e) => {
         e.preventDefault();
         document.getElementById('project-0')?.scrollIntoView({ behavior: 'smooth' });
+        setCurrentSection('works');
       };
 
       const scrollToContact = (e) => {
         e.preventDefault();
         document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+        setCurrentSection('contact');
       };
 
       const revealEmail = () => {
@@ -123,8 +127,12 @@
             <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 py-6 md:py-8 bg-black bg-opacity-50 backdrop-blur-sm">
               <a href="#home" onClick={scrollToHome} className="text-[10px] md:text-xs tracking-widest hover:text-gray-400 transition cursor-pointer">VAHID GHEIDARLOU</a>
               <div className="flex gap-6 md:gap-12 text-[10px] md:text-xs tracking-widest">
-                <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
-                <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
+                {currentSection !== 'works' && (
+                  <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
+                )}
+                {currentSection !== 'contact' && (
+                  <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
+                )}
               </div>
             </nav>
 
@@ -169,8 +177,12 @@
               <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 py-6 md:py-8 bg-black bg-opacity-90 backdrop-blur-sm">
                 <a href="#home" onClick={scrollToHome} className="text-[10px] md:text-xs tracking-widest hover:text-gray-400 transition cursor-pointer">VAHID GHEIDARLOU</a>
                 <div className="flex gap-6 md:gap-12 text-[10px] md:text-xs tracking-widest">
-                  <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
-                  <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
+                  {currentSection !== 'works' && (
+                    <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
+                  )}
+                  {currentSection !== 'contact' && (
+                    <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
+                  )}
                 </div>
               </nav>
 
@@ -309,8 +321,12 @@
             <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 py-6 md:py-8 bg-black bg-opacity-90 backdrop-blur-sm">
               <a href="#home" onClick={scrollToHome} className="text-[10px] md:text-xs tracking-widest hover:text-gray-400 transition cursor-pointer">VAHID GHEIDARLOU</a>
               <div className="flex gap-6 md:gap-12 text-[10px] md:text-xs tracking-widest">
-                <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
-                <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
+                {currentSection !== 'works' && (
+                  <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
+                )}
+                {currentSection !== 'contact' && (
+                  <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
+                )}
               </div>
             </nav>
 
