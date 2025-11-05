@@ -23,6 +23,8 @@
     function Portfolio() {
       const [currentProject, setCurrentProject] = useState(0);
       const [selectedImage, setSelectedImage] = useState(0);
+      const [projects, setProjects] = useState([]);
+      const [loading, setLoading] = useState(true);
 
       const scrollToWorks = (e) => {
         e.preventDefault();
@@ -46,68 +48,20 @@
         }
       };
 
-      const projects = [
-        {
-          title: "CERAMIC VASE COLLECTION",
-          year: "2025",
-          description: "A series of handcrafted ceramic vases exploring organic forms and minimalist aesthetics.",
-          images: [
-            "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1493106641515-6b5631de4bb9?w=1200&h=1600&fit=crop"
-          ],
-          details: "Materials: Porcelain, Stoneware\nDimensions: Various\nEdition: Limited"
-        },
-        {
-          title: "MODULAR FURNITURE SYSTEM",
-          year: "2025",
-          description: "An innovative modular furniture system designed for flexible living spaces.",
-          images: [
-            "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=1600&fit=crop"
-          ],
-          details: "Materials: Oak Wood, Steel\nDimensions: Customizable\nEdition: Made to Order"
-        },
-        {
-          title: "ARCHITECTURAL LIGHTING",
-          year: "2026",
-          description: "Custom lighting fixtures that blur the line between functional object and sculptural art.",
-          images: [
-            "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1543198126-a8ad8e47a917?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1540932239986-30128078f3c5?w=1200&h=1600&fit=crop"
-          ],
-          details: "Materials: Brass, Glass, LED\nDimensions: Various\nEdition: Limited Production"
-        },
-        {
-          title: "TEXTILE WALL ART",
-          year: "2026",
-          description: "Large-scale textile artworks exploring texture, color, and materiality.",
-          images: [
-            "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1582582621959-48d27397dc69?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1576097449798-7c7f90e1248a?w=1200&h=1600&fit=crop"
-          ],
-          details: "Materials: Wool, Linen, Cotton\nDimensions: 200 x 150 cm\nEdition: Unique Pieces"
-        },
-        {
-          title: "COLLECTIBLE OBJECTS",
-          year: "2026",
-          description: "A curated collection of small sculptural objects functioning as art pieces.",
-          images: [
-            "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1582053433188-86b77f8de3b6?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?w=1200&h=1600&fit=crop",
-            "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=1200&h=1600&fit=crop"
-          ],
-          details: "Materials: Bronze, Marble, Wood\nDimensions: 10-30 cm\nEdition: Limited to 50"
-        }
-      ];
+      // Load projects from JSON file
+      useEffect(() => {
+        fetch('projects.json')
+          .then(response => response.json())
+          .then(data => {
+            setProjects(data.projects);
+            setLoading(false);
+          })
+          .catch(error => {
+            console.error('Error loading projects:', error);
+            setLoading(false);
+          });
+      }, []);
+
 
       const scrollToProject = (index) => {
         document.getElementById(`project-${index}`)?.scrollIntoView({ behavior: 'smooth' });
@@ -144,6 +98,18 @@
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
       }, [currentProject, projects]); */
+
+      if (loading) {
+        return (
+          <div className="bg-black min-h-screen text-white font-sans flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-2xl md:text-4xl font-extralight tracking-[0.3em] animate-pulse">
+                LOADING...
+              </div>
+            </div>
+          </div>
+        );
+      }
 
       return (
         <div className="bg-black min-h-screen text-white font-sans">
