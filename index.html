@@ -26,6 +26,11 @@
       const [projects, setProjects] = useState([]);
       const [loading, setLoading] = useState(true);
 
+      const scrollToHome = (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
       const scrollToWorks = (e) => {
         e.preventDefault();
         document.getElementById('project-0')?.scrollIntoView({ behavior: 'smooth' });
@@ -37,8 +42,8 @@
       };
 
       const revealEmail = () => {
-        const user = 'vahid.gheidarlou';
-        const domain = 'gmail.com';
+        const user = 'hello';
+        const domain = 'vahidgheidarlou.com';
         const email = user + '@' + domain;
         const emailLink = document.getElementById('email-link');
         if (emailLink) {
@@ -116,7 +121,7 @@
           {/* Hero Section */}
           <div className="min-h-screen flex flex-col relative bg-black">
             <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 py-6 md:py-8 bg-black bg-opacity-50 backdrop-blur-sm">
-              <div className="text-[10px] md:text-xs tracking-widest">VAHID GHEIDARLOU</div>
+              <a href="#home" onClick={scrollToHome} className="text-[10px] md:text-xs tracking-widest hover:text-gray-400 transition cursor-pointer">VAHID GHEIDARLOU</a>
               <div className="flex gap-6 md:gap-12 text-[10px] md:text-xs tracking-widest">
                 <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
                 <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
@@ -162,7 +167,7 @@
               className="min-h-screen flex flex-col relative bg-black"
             >
               <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 py-6 md:py-8 bg-black bg-opacity-90 backdrop-blur-sm">
-                <div className="text-[10px] md:text-xs tracking-widest">VAHID GHEIDARLOU</div>
+                <a href="#home" onClick={scrollToHome} className="text-[10px] md:text-xs tracking-widest hover:text-gray-400 transition cursor-pointer">VAHID GHEIDARLOU</a>
                 <div className="flex gap-6 md:gap-12 text-[10px] md:text-xs tracking-widest">
                   <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
                   <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
@@ -302,7 +307,7 @@
           {/* Contact Section */}
           <div id="contact" className="min-h-screen flex flex-col relative bg-black">
             <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 py-6 md:py-8 bg-black bg-opacity-90 backdrop-blur-sm">
-              <div className="text-[10px] md:text-xs tracking-widest">VAHID GHEIDARLOU</div>
+              <a href="#home" onClick={scrollToHome} className="text-[10px] md:text-xs tracking-widest hover:text-gray-400 transition cursor-pointer">VAHID GHEIDARLOU</a>
               <div className="flex gap-6 md:gap-12 text-[10px] md:text-xs tracking-widest">
                 <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
                 <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
@@ -350,6 +355,9 @@
             </div>
             <div className="absolute bottom-4 md:bottom-8 right-6 md:right-12 text-[10px] md:text-xs tracking-widest text-gray-500">
               ©2026
+            </div>
+            <div className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 text-center text-[10px] md:text-xs tracking-widest text-gray-500 hidden sm:block">
+              AN ARCHITECT AND ARTIST
             </div>
           </div>
         </div>
