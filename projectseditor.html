@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects Editor - Vahid Gheidarlou</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #0a0a0a;
+    }
+  </style>
+</head>
+<body class="bg-black text-white min-h-screen p-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-12 border-b border-gray-800 pb-6">
+      <h1 class="text-4xl font-extralight tracking-[0.2em] mb-2">PROJECTS EDITOR</h1>
+      <p class="text-sm text-gray-500 tracking-wider">Manage your portfolio projects</p>
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="mb-8 flex gap-4 flex-wrap">
+      <button
+        onclick="addNewProject()"
+        class="px-6 py-3 bg-white text-black hover:bg-gray-200 transition tracking-wider text-sm font-medium"
+      >
+        + ADD NEW PROJECT
+      </button>
+      <button
+        onclick="downloadJSON()"
+        class="px-6 py-3 border border-gray-600 hover:bg-gray-900 transition tracking-wider text-sm"
+      >
+        ↓ DOWNLOAD JSON
+      </button>
+      <button
+        onclick="copyJSON()"
+        class="px-6 py-3 border border-gray-600 hover:bg-gray-900 transition tracking-wider text-sm"
+      >
+        📋 COPY JSON
+      </button>
+      <button
+        onclick="loadFromFile()"
+        class="px-6 py-3 border border-gray-600 hover:bg-gray-900 transition tracking-wider text-sm"
+      >
+        📂 LOAD FROM FILE
+      </button>
+      <input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleFileLoad(event)">
+    </div>
+
+    <!-- Projects List -->
+    <div id="projectsList" class="space-y-6">
+      <!-- Projects will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-90 hidden items-center justify-center z-50 p-4 overflow-y-auto">
+    <div class="bg-gray-900 border border-gray-700 max-w-4xl w-full p-8 my-8">
+      <h2 class="text-2xl font-extralight tracking-[0.2em] mb-6" id="modalTitle">EDIT PROJECT</h2>
+
+      <div class="space-y-6">
+        <div>
+          <label class="block text-xs tracking-widest text-gray-400 mb-2">TITLE</label>
+          <input
+            type="text"
+            id="editTitle"
+            class="w-full bg-black border border-gray-700 px-4 py-3 text-white focus:border-white outline-none"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs tracking-widest text-gray-400 mb-2">YEAR</label>
+          <input
+            type="text"
+            id="editYear"
+            class="w-full bg-black border border-gray-700 px-4 py-3 text-white focus:border-white outline-none"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs tracking-widest text-gray-400 mb-2">DESCRIPTION</label>
+          <textarea
+            id="editDescription"
+            rows="3"
+            class="w-full bg-black border border-gray-700 px-4 py-3 text-white focus:border-white outline-none"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs tracking-widest text-gray-400 mb-2">DETAILS (use \n for new lines)</label>
+          <textarea
+            id="editDetails"
+            rows="3"
+            class="w-full bg-black border border-gray-700 px-4 py-3 text-white focus:border-white outline-none"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs tracking-widest text-gray-400 mb-2">IMAGES (one URL per line)</label>
+          <textarea
+            id="editImages"
+            rows="6"
+            class="w-full bg-black border border-gray-700 px-4 py-3 text-white focus:border-white outline-none font-mono text-sm"
+            placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="flex gap-4 mt-8">
+        <button
+          onclick="saveProject()"
+          class="flex-1 px-6 py-3 bg-white text-black hover:bg-gray-200 transition tracking-wider text-sm font-medium"
+        >
+          SAVE
+        </button>
+        <button
+          onclick="closeModal()"
+          class="flex-1 px-6 py-3 border border-gray-600 hover:bg-gray-900 transition tracking-wider text-sm"
+        >
+          CANCEL
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let projects = { projects: [] };
+    let editingIndex = -1;
+
+    // Load projects on page load
+    async function loadProjects() {
+      try {
+        const response = await fetch('projects.json');
+        projects = await response.json();
+        renderProjects();
+      } catch (error) {
+        console.error('Error loading projects:', error);
+        alert('Could not load projects.json. Make sure the file exists.');
+      }
+    }
+
+    function renderProjects() {
+      const container = document.getElementById('projectsList');
+
+      if (projects.projects.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 text-gray-500">
+            <p class="text-xl tracking-wider">NO PROJECTS YET</p>
+            <p class="text-sm mt-2">Click "ADD NEW PROJECT" to get started</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = projects.projects.map((project, index) => `
+        <div class="border border-gray-800 p-6 hover:border-gray-600 transition">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="text-2xl font-extralight tracking-[0.15em] mb-2">${project.title}</h3>
+              <p class="text-xs tracking-widest text-gray-500">${project.year}</p>
+            </div>
+            <div class="flex gap-2">
+              <button
+                onclick="editProject(${index})"
+                class="px-4 py-2 border border-gray-600 hover:bg-gray-800 transition text-xs tracking-wider"
+              >
+                EDIT
+              </button>
+              <button
+                onclick="deleteProject(${index})"
+                class="px-4 py-2 border border-red-900 text-red-500 hover:bg-red-950 transition text-xs tracking-wider"
+              >
+                DELETE
+              </button>
+            </div>
+          </div>
+          <p class="text-sm text-gray-400 mb-4">${project.description}</p>
+          <div class="flex gap-2 flex-wrap">
+            ${project.images.map((img, i) => `
+              <img src="${img}" alt="Image ${i+1}" class="w-20 h-20 object-cover border border-gray-700" onerror="this.style.display='none'">
+            `).join('')}
+          </div>
+          <div class="mt-4 text-xs text-gray-500 whitespace-pre-line">
+            ${project.details}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addNewProject() {
+      editingIndex = -1;
+      document.getElementById('modalTitle').textContent = 'ADD NEW PROJECT';
+      document.getElementById('editTitle').value = '';
+      document.getElementById('editYear').value = new Date().getFullYear();
+      document.getElementById('editDescription').value = '';
+      document.getElementById('editDetails').value = '';
+      document.getElementById('editImages').value = '';
+      document.getElementById('editModal').classList.remove('hidden');
+      document.getElementById('editModal').classList.add('flex');
+    }
+
+    function editProject(index) {
+      editingIndex = index;
+      const project = projects.projects[index];
+      document.getElementById('modalTitle').textContent = 'EDIT PROJECT';
+      document.getElementById('editTitle').value = project.title;
+      document.getElementById('editYear').value = project.year;
+      document.getElementById('editDescription').value = project.description;
+      document.getElementById('editDetails').value = project.details;
+      document.getElementById('editImages').value = project.images.join('\n');
+      document.getElementById('editModal').classList.remove('hidden');
+      document.getElementById('editModal').classList.add('flex');
+    }
+
+    function closeModal() {
+      document.getElementById('editModal').classList.add('hidden');
+      document.getElementById('editModal').classList.remove('flex');
+    }
+
+    function saveProject() {
+      const title = document.getElementById('editTitle').value.trim();
+      const year = document.getElementById('editYear').value.trim();
+      const description = document.getElementById('editDescription').value.trim();
+      const details = document.getElementById('editDetails').value.trim();
+      const imagesText = document.getElementById('editImages').value.trim();
+
+      if (!title || !year || !description) {
+        alert('Please fill in Title, Year, and Description');
+        return;
+      }
+
+      const images = imagesText.split('\n').map(url => url.trim()).filter(url => url);
+
+      if (images.length === 0) {
+        alert('Please add at least one image URL');
+        return;
+      }
+
+      const projectData = {
+        title,
+        year,
+        description,
+        images,
+        details
+      };
+
+      if (editingIndex === -1) {
+        // Add new project
+        projects.projects.push(projectData);
+      } else {
+        // Update existing project
+        projects.projects[editingIndex] = projectData;
+      }
+
+      renderProjects();
+      closeModal();
+    }
+
+    function deleteProject(index) {
+      if (confirm(`Are you sure you want to delete "${projects.projects[index].title}"?`)) {
+        projects.projects.splice(index, 1);
+        renderProjects();
+      }
+    }
+
+    function downloadJSON() {
+      const dataStr = JSON.stringify(projects, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'projects.json';
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function copyJSON() {
+      const dataStr = JSON.stringify(projects, null, 2);
+      navigator.clipboard.writeText(dataStr).then(() => {
+        alert('JSON copied to clipboard! You can now paste it into projects.json file.');
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy to clipboard');
+      });
+    }
+
+    function loadFromFile() {
+      document.getElementById('fileInput').click();
+    }
+
+    function handleFileLoad(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const loadedProjects = JSON.parse(e.target.result);
+          if (loadedProjects.projects && Array.isArray(loadedProjects.projects)) {
+            projects = loadedProjects;
+            renderProjects();
+            alert('Projects loaded successfully!');
+          } else {
+            alert('Invalid JSON format. Expected { "projects": [...] }');
+          }
+        } catch (error) {
+          alert('Error parsing JSON file: ' + error.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Load projects when page loads
+    loadProjects();
+  </script>
+</body>
+</html>
