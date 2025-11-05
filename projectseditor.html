@@ -236,7 +236,12 @@
     // Handle image upload from computer
     function handleImageUpload(event) {
       const files = event.target.files;
-      if (files.length === 0) return;
+      console.log('handleImageUpload called, files:', files.length);
+
+      if (files.length === 0) {
+        console.log('No files selected');
+        return;
+      }
 
       uploadedImages = [];
       imagesToCopy = [];
@@ -244,14 +249,21 @@
       const filesToCopyContainer = document.getElementById('filesToCopy');
       const filesToCopyList = document.getElementById('filesToCopyList');
 
+      console.log('Preview container:', previewContainer);
+      console.log('Files to copy container:', filesToCopyContainer);
+
       previewContainer.innerHTML = '';
       previewContainer.classList.remove('hidden');
       filesToCopyContainer.classList.remove('hidden');
 
+      console.log('Processing files...');
       Array.from(files).forEach((file, index) => {
+        console.log(`Processing file ${index + 1}/${files.length}:`, file.name);
+
         // Create preview
         const reader = new FileReader();
         reader.onload = function(e) {
+          console.log(`Preview loaded for: ${file.name}`);
           const img = document.createElement('div');
           img.className = 'relative group';
           img.innerHTML = `
@@ -263,6 +275,9 @@
             <p class="text-xs text-gray-500 mt-1 truncate" title="${file.name}">${file.name}</p>
           `;
           previewContainer.appendChild(img);
+        };
+        reader.onerror = function(error) {
+          console.error('Error reading file:', file.name, error);
         };
         reader.readAsDataURL(file);
 
@@ -294,14 +309,17 @@
       filesToCopyList.innerHTML = imagesToCopy.map(f => `
         <li>Copy: <strong>${f.originalName}</strong> → <strong>${f.newPath}</strong></li>
       `).join('');
+      console.log('Files to copy:', imagesToCopy);
 
       // Update image URLs textarea
       const currentUrls = document.getElementById('editImages').value.trim();
       const newUrls = uploadedImages.map(img => img.path).join('\n');
       document.getElementById('editImages').value = currentUrls ? currentUrls + '\n' + newUrls : newUrls;
+      console.log('Updated textarea with URLs:', newUrls);
 
       // Show download button
       updateDownloadButton();
+      console.log('Image upload complete');
     }
 
     function removeUploadedImage(index) {
@@ -348,7 +366,9 @@
       uploadedImages = [];
       imagesToCopy = [];
       document.getElementById('imagePreview').classList.add('hidden');
+      document.getElementById('imagePreview').innerHTML = '';
       document.getElementById('filesToCopy').classList.add('hidden');
+      document.getElementById('imageUpload').value = ''; // Reset file input
       updateDownloadButton();
       editingIndex = -1;
       document.getElementById('modalTitle').textContent = 'ADD NEW PROJECT';
@@ -362,6 +382,13 @@
     }
 
     function editProject(index) {
+      uploadedImages = [];
+      imagesToCopy = [];
+      document.getElementById('imagePreview').classList.add('hidden');
+      document.getElementById('imagePreview').innerHTML = '';
+      document.getElementById('filesToCopy').classList.add('hidden');
+      document.getElementById('imageUpload').value = ''; // Reset file input
+      updateDownloadButton();
       editingIndex = index;
       const project = projects.projects[index];
       document.getElementById('modalTitle').textContent = 'EDIT PROJECT';
@@ -375,6 +402,15 @@
     }
 
     function closeModal() {
+      // Reset everything
+      uploadedImages = [];
+      imagesToCopy = [];
+      document.getElementById('imagePreview').classList.add('hidden');
+      document.getElementById('imagePreview').innerHTML = '';
+      document.getElementById('filesToCopy').classList.add('hidden');
+      document.getElementById('imageUpload').value = '';
+      updateDownloadButton();
+
       document.getElementById('editModal').classList.add('hidden');
       document.getElementById('editModal').classList.remove('flex');
     }
