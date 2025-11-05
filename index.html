@@ -29,6 +29,23 @@
         document.getElementById('project-0')?.scrollIntoView({ behavior: 'smooth' });
       };
 
+      const scrollToContact = (e) => {
+        e.preventDefault();
+        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+      };
+
+      const revealEmail = () => {
+        const user = 'vahid.gheidarlou';
+        const domain = 'gmail.com';
+        const email = user + '@' + domain;
+        const emailLink = document.getElementById('email-link');
+        if (emailLink) {
+          emailLink.href = 'mailto:' + email;
+          emailLink.textContent = email;
+          emailLink.classList.remove('blur-sm');
+        }
+      };
+
       const projects = [
         {
           title: "CERAMIC VASE COLLECTION",
@@ -136,7 +153,7 @@
               <div className="text-[10px] md:text-xs tracking-widest">VAHID GHEIDARLOU</div>
               <div className="flex gap-6 md:gap-12 text-[10px] md:text-xs tracking-widest">
                 <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
-                <a href="#" className="hover:text-gray-400 transition">CONTACT</a>
+                <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
               </div>
             </nav>
 
@@ -182,7 +199,7 @@
                 <div className="text-[10px] md:text-xs tracking-widest">VAHID GHEIDARLOU</div>
                 <div className="flex gap-6 md:gap-12 text-[10px] md:text-xs tracking-widest">
                   <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
-                  <a href="#" className="hover:text-gray-400 transition">CONTACT</a>
+                  <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
                 </div>
               </nav>
 
@@ -313,6 +330,66 @@
               </div>
             </div>
           ))}
+
+          {/* Contact Section */}
+          <div id="contact" className="min-h-screen flex flex-col relative bg-black">
+            <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 py-6 md:py-8 bg-black bg-opacity-90 backdrop-blur-sm">
+              <div className="text-[10px] md:text-xs tracking-widest">VAHID GHEIDARLOU</div>
+              <div className="flex gap-6 md:gap-12 text-[10px] md:text-xs tracking-widest">
+                <a href="#works" onClick={scrollToWorks} className="hover:text-gray-400 transition cursor-pointer">WORKS</a>
+                <a href="#contact" onClick={scrollToContact} className="hover:text-gray-400 transition cursor-pointer">CONTACT</a>
+              </div>
+            </nav>
+
+            <div className="flex-1 flex items-center justify-center px-6 md:px-12 py-24">
+              <div className="max-w-4xl w-full text-center space-y-12">
+                <div>
+                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-[0.2em] mb-8">
+                    GET IN TOUCH
+                  </h2>
+                  <p className="text-sm md:text-base text-gray-400 tracking-widest mb-12">
+                    FOR INQUIRIES AND COLLABORATIONS
+                  </p>
+                </div>
+
+                <div className="space-y-8">
+                  {/* Anti-bot protected email */}
+                  <div className="inline-block">
+                    <div className="text-xs md:text-sm tracking-widest text-gray-500 mb-4">EMAIL</div>
+                    <button
+                      onClick={revealEmail}
+                      className="group relative"
+                    >
+                      <a
+                        id="email-link"
+                        href="#"
+                        className="text-xl md:text-3xl lg:text-4xl tracking-wider hover:text-gray-400 transition-all duration-300 blur-sm"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        Click to reveal email
+                      </a>
+                      <div className="mt-4 text-xs text-gray-600 tracking-widest">
+                        CLICK TO SHOW EMAIL ADDRESS
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="pt-12">
+                    <div className="inline-block px-8 py-3 border border-gray-700 text-xs tracking-widest text-gray-500">
+                      ANTI-BOT PROTECTION ENABLED
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="absolute bottom-4 md:bottom-8 left-6 md:left-12 text-[10px] md:text-xs tracking-widest text-gray-500">
+              VAHID GHEIDARLOU
+            </div>
+            <div className="absolute bottom-4 md:bottom-8 right-6 md:right-12 text-[10px] md:text-xs tracking-widest text-gray-500">
+              ©2026
+            </div>
+          </div>
         </div>
       );
     }
